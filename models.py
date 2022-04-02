@@ -184,33 +184,7 @@ class Map:
         for node in self.nodes:
             node.is_visited = value
 
-    def BFS(self, initial_position : list(),  target_position : list()):
 
-        """
-        BFS implementation
-        """
-        # Clear is visited
-        self.clearIsVisited()
-
-        queue = [[self.findNodeFromPositionRef(initial_position)]]
-        
-        while queue:
-            path = queue.pop(0)
-            node = path[-1]
-            if node.is_visited == False:
-                neighbours = node.adj
-                for neighbour in neighbours:
-                    new_path = list(path)
-                    new_path.append(neighbour)
-                    queue.append(new_path)
-                    
-    
-                    if neighbour.position == target_position:
-                        print("Path", *new_path)
-                        return new_path
-                node.is_visited = True
-    
-        return None
     
 
     def calculateRoute(self, path: list()) -> list:
@@ -229,18 +203,10 @@ class Map:
         return keys
 
     def targetTraverse(self, start_position, target_position, path:list(), visited_list: list()):
-        
-        path += self.BFS(start_position, target_position)
-        
-        # Get targets
-        targets = self.findNodeFromTypeRef("T")
-
-        for target in targets:
-            if target not in visited_list:
-                visited_list.append(target)
-                self.targetTraverse(target_position, target.position, path,visited_list )
-        
-        return path
+        """
+        This function need to be overriden in the child classes
+        """
+        pass
     
     def calculateToAllTarget(self) -> Tuple[list, list]:
         """
@@ -269,4 +235,92 @@ class Map:
 
 
 
+
+class BFSMap(Map):
+    def __init__(self, map_matrix: list()) -> None:
+        super().__init__(map_matrix)
+    
+    def targetTraverse(self, start_position, target_position, path: list(), visited_list: list()):
+        path += self.BFS(start_position, target_position)
+        
+        # Get targets
+        targets = self.findNodeFromTypeRef("T")
+
+        for target in targets:
+            if target not in visited_list:
+                visited_list.append(target)
+                self.targetTraverse(target_position, target.position, path,visited_list )
+        
+        return path
+    
+    def BFS(self, initial_position : list(),  target_position : list()):
+
+        """
+        BFS implementation
+        """
+        # Clear is visited
+        self.clearIsVisited()
+
+        queue = [[self.findNodeFromPositionRef(initial_position)]]
+        
+        while queue:
+            path = queue.pop(0)
+            node = path[-1]
+            if node.is_visited == False:
+                neighbours = node.adj
+                for neighbour in neighbours:
+                    new_path = list(path)
+                    new_path.append(neighbour)
+                    queue.append(new_path)
+                    
+    
+                    if neighbour.position == target_position:
+                        print("Path", *new_path)
+                        return new_path
+                node.is_visited = True
+    
+        return None
+
+class DFSMap(Map):
+    def __init__(self, map_matrix: list()) -> None:
+        super().__init__(map_matrix)
+    
+    def targetTraverse(self, start_position, target_position, path: list(), visited_list: list()):
+        path += self.DFS(start_position, target_position)
+        
+        # Get targets
+        targets = self.findNodeFromTypeRef("T")
+
+        for target in targets:
+            if target not in visited_list:
+                visited_list.append(target)
+                self.targetTraverse(target_position, target.position, path,visited_list )
+        
+        return path
+    
+    def DFS(self, initial_position : list(),  target_position : list()):
+
+        """
+        DFS implementation
+        """
+        # Clear is visited
+        self.clearIsVisited()
+
+        start_node = self.findNodeFromPositionRef(initial_position)
+        stack = [start_node]
+        stack_path = [[start_node]]
+        
+        while stack:
+            node, path = stack.pop(), stack_path.pop()
+            
+            if not node.is_visited:
+                if node.position == target_position:
+                    return path
+                node.is_visited = True
+                for adj_node in node.adj:
+                    stack.append(adj_node)
+                    stack_path.append(path+[adj_node])
+            pass
+    
+  
 

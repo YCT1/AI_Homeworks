@@ -2,7 +2,7 @@ import time
 import random
 from copy import deepcopy
 from agent import Agent
-
+from models import DFSMap
 
 #  use whichever data structure you like, or create a custom one
 import queue
@@ -48,8 +48,9 @@ class DFSAgent(Agent):
 
         initial_level_matrix = [list(row) for row in level_matrix] #deepcopy(level_matrix)
         s0 = Node(None, initial_level_matrix, player_row, player_column, 0, "X")
-
-        raise NotImplementedError
+        
+        myMap = DFSMap(initial_level_matrix)
+        paths, move_sequence = myMap.calculateToAllTarget()
         
         """
             YOUR CODE ENDS HERE
