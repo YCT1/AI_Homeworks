@@ -1,6 +1,5 @@
 import copy
 from ctypes import Union
-from importlib.resources import path
 from typing import Tuple
 
 

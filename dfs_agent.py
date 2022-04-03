@@ -10,25 +10,7 @@ import heapq
 from collections import deque
 
 
-"""
-  you may use the following Node class
-  modify it if needed, or create your own
-"""
-class Node():
-    
-    def __init__(self, parent_node, level_matrix, player_row, player_column, depth, chosen_dir):
-        self.parent_node = parent_node
-        self.level_matrix = level_matrix
-        self.player_row = player_row
-        self.player_col = player_column
-        self.depth = depth
-        self.chosen_dir = chosen_dir
-        
-        self.seq = ""
-        if (self.chosen_dir == "X"):
-            pass
-        else:
-            self.seq = parent_node.seq + self.chosen_dir
+
 
 
 
@@ -47,7 +29,7 @@ class DFSAgent(Agent):
         """
 
         initial_level_matrix = [list(row) for row in level_matrix] #deepcopy(level_matrix)
-        s0 = Node(None, initial_level_matrix, player_row, player_column, 0, "X")
+        
         
         myMap = DFSMap(initial_level_matrix)
         paths, move_sequence = myMap.calculateToAllTarget()
