@@ -36,6 +36,13 @@ class AStart(Map):
         dy = target_position[1] - start_position[1]
         return math.sqrt(dx**2 + dy**2)
 
+    def h_chebyshev(self, start_position: list(), target_position: list()) -> float:
+        """
+        H function (Chebyshev version)
+        """
+        dx = target_position[0] - start_position[0]
+        dy = target_position[1] - start_position[1]
+        return max(abs(dx), abs(dy))
     
     def aStartAlgorithm(self, start_position: list(), target_position: list(), heuristic):
        
