@@ -1,6 +1,8 @@
 import copy
 from ctypes import Union
 from typing import Tuple
+from math import sqrt
+
 
 
 
@@ -362,6 +364,15 @@ class AStart(Map):
         dy = target_position[1] - start_position[1]
         return abs(dx) + abs(dy)
 
+    def h_euclidean(self, start_position: list(), target_position: list()):
+        """
+        H function (Euclidean version)
+        """
+        dx = target_position[0] - start_position[0]
+        dy = target_position[1] - start_position[1]
+        r = sqrt(dx**2 + dy**2)
+        print("AA", r)
+        return r
     def aStartAlgorithm(self, start_position: list(), target_position: list(), heuristic):
         # In this open_lst is a lisy of nodes which have been visited, but who's 
         # neighbours haven't all been always inspected, It starts off with the start 

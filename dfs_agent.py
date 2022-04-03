@@ -32,6 +32,7 @@ class DFSMap(Map):
             
             if not node.is_visited:
                 if node.position == target_position:
+                    print("Path", *path)
                     return path
                 node.is_visited = True
                 for adj_node in node.adj:
@@ -39,7 +40,8 @@ class DFSMap(Map):
                     stack_path.append(path+[adj_node])
                     self.expanded_node_count += 1
             pass
-    
+        
+        return None
 
 
 

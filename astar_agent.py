@@ -1,6 +1,8 @@
 import time
 import random
 from copy import deepcopy
+
+import math
 from agent import Agent, Map, Node
 from models import AStart
 
@@ -9,34 +11,12 @@ import queue
 import heapq
 from collections import deque
 
-
-"""
-  you may use the following Node class
-  modify it if needed, or create your own
-"""
 class AStart(Map):
-    def createmap(self, map_matrix: list()):
-
-        # Copy map matrix to walk matrix
-        self.walk_matrix = deepcopy(map_matrix)
-        self.walk_matrix = self.fill(self.walk_matrix, False)
-
-        # Traverse though map
-        for y, row in enumerate(map_matrix):
-            for x, element in enumerate(row):
-                if element == "F" or element == "B" or element == "T" or element == "S" or element == "D":
-                    
-                    # Create Node
-                    node = Node(element,[x,y])
-
-                    # Node add to the list
-                    self.nodes.append(node)
-
-                    # Set True value to at the walkable matrix
-                    self.walk_matrix[y][x] = True
-        
-        # Create adj connection to each  node
-        self.createAdjConnections()
+    def walkableCells(self, element: str) -> bool:
+        """
+        It check and return true if cell is desired walkable cells for level2
+        """
+        return element == "F" or element == "B" or element == "T" or element == "S" or element == "D"  
 
     def targetTraverse(self, start_position, target_position, path: list(), visited_list: list()):
         
@@ -44,13 +24,21 @@ class AStart(Map):
         path += self.aStartAlgorithm(start_position, target_position, self.h_manhattan)
         return super().targetTraverse(start_position, target_position, path, visited_list)
     
-    def h_manhattan(self, start_position: list(), target_position: list()):
+    def h_manhattan(self, start_position: list(), target_position: list()) -> int:
         """
         H function (Manhattan version)
         """
         dx = target_position[0] - start_position[0]
         dy = target_position[1] - start_position[1]
         return abs(dx) + abs(dy)
+
+    def h_euclidean(self, start_position: list(), target_position: list()) -> float:
+        """
+        H function (Euclidean version)
+        """
+        dx = target_position[0] - start_position[0]
+        dy = target_position[1] - start_position[1]
+        return math.sqrt(dx**2 + dy**2)
 
     def aStartAlgorithm(self, start_position: list(), target_position: list(), heuristic):
         # In this open_lst is a lisy of nodes which have been visited, but who's 
@@ -73,7 +61,7 @@ class AStart(Map):
         par = {}
         par[start] = start
  
-        while len(open_lst) > 0:
+        while open_lst:
             n = None
  
             # it will find a node with the lowest value of f() -
@@ -98,7 +86,7 @@ class AStart(Map):
  
                 reconst_path.reverse()
  
-                print('Path found: {}'.format(reconst_path))
+                print("Path", *reconst_path)
                 return reconst_path
  
             # for all the neighbors of the current node do
@@ -126,8 +114,7 @@ class AStart(Map):
             # because all of his neighbors were inspected
             open_lst.remove(n)
             closed_lst.add(n)
- 
-        print('Path does not exist!')
+
         return None
 
 
