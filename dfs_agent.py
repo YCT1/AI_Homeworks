@@ -2,8 +2,7 @@ import time
 import random
 from copy import deepcopy
 from agent import Agent, Map
-#from models import DFSMap, Map
-
+# Yekta Can Tursun, 150170105
 #  use whichever data structure you like, or create a custom one
 import queue
 import heapq
@@ -33,7 +32,7 @@ class DFSMap(Map):
             
             if not node.is_visited:
                 if node.position == target_position:
-                    #print("Path", *path)
+                    print("Path", *path)
                     return path
                 node.is_visited = True
                 for adj_node in node.adj:

@@ -2,7 +2,7 @@ import time
 import random
 from copy import deepcopy
 from agent import Agent, Map
-
+# Yekta Can Tursun, 150170105
 
 #  use whichever data structure you like, or create a custom one
 import queue

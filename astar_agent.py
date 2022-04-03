@@ -2,7 +2,7 @@ import time
 import random
 import math
 from agent import Agent, Map
-
+# Yekta Can Tursun, 150170105
 
 #  use whichever data structure you like, or create a custom one
 
@@ -111,7 +111,7 @@ class AStart(Map):
 
                     # Add to the set of open_set
                     open_set.add(adj_node)
-                    self.expanded_node_count += 1 # For stats
+                    self.generated_node_count += 1 # For stats
  
                 
                 else:
@@ -125,12 +125,12 @@ class AStart(Map):
                         if adj_node in closed_set:
                             closed_set.remove(adj_node)
                             open_set.add(adj_node)
-                            self.expanded_node_count += 1 # For stats
- 
+                            #self.expanded_node_count += 1 # For stats
+            self.expanded_node_count += 1
             # All adj nodes are explored thus it is closed case
             open_set.remove(n)
             closed_set.add(n)
-            self.generated_node_count += 1 # For stats
+            #self.generated_node_count += 1 # For stats
  
         # If that point, we cannot find anything thus there is no any route
         return None
