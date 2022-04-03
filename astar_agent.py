@@ -2,7 +2,7 @@ import time
 import random
 from copy import deepcopy
 from agent import Agent
-
+from models import AStart
 
 #  use whichever data structure you like, or create a custom one
 import queue
@@ -68,7 +68,8 @@ class AStarAgent(Agent):
 
         s0 = Node(None, initial_level_matrix, player_row, player_column, 0, "X", initial_h)
 
-        raise NotImplementedError
+        myMap = AStart(initial_level_matrix)
+        _,move_sequence = myMap.calculateToAllTarget()
 
         """
             YOUR CODE ENDS HERE
