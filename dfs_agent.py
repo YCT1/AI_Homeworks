@@ -2,6 +2,7 @@ import time
 import random
 from copy import deepcopy
 from agent import Agent, Map
+#from models import DFSMap, Map
 
 #  use whichever data structure you like, or create a custom one
 import queue
@@ -32,16 +33,16 @@ class DFSMap(Map):
             
             if not node.is_visited:
                 if node.position == target_position:
-                    print("Path", *path)
+                    #print("Path", *path)
                     return path
                 node.is_visited = True
                 for adj_node in node.adj:
                     stack.append(adj_node)
                     stack_path.append(path+[adj_node])
-                    self.expanded_node_count += 1
+                    #self.expanded_node_count += 1
             pass
         
-        return None
+        
 
 
 
@@ -64,7 +65,7 @@ class DFSAgent(Agent):
         
         self.map_manager = DFSMap(initial_level_matrix)
         paths, move_sequence = self.map_manager.calculateToAllTarget()
-        self.expanded_node_count = self.map_manager.expanded_node_count
+        #self.expanded_node_count = self.map_manager.expanded_node_count
         """
             YOUR CODE ENDS HERE
             return move_sequence

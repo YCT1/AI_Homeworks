@@ -32,8 +32,8 @@ class Node:
         "F": 1,
         "S": 2,
         "D": 4,
-        "T" : 1,
-        "B" : 1
+        "T": 1,
+        "B": 1
         }
         return type_cost[type]
 
@@ -177,21 +177,24 @@ class Map(Agent):
             return results
     
     def createAdjConnections(self):
+        """
+        For each node, and for each node's 4 side (up, down, right and left) firstly check if adjecent node exsist if exsist it adds to node's connections
+        """
         for i in range(len(self.nodes)):
             x,y = self.nodes[i].position[0], self.nodes[i].position[1]
-            
-            # Up Side
-            up_node = self.findNodeFromPosition([x,y-1])
-            if up_node != -1:
-                self.nodes[i].adj.append(self.nodes[up_node])
-                self.nodes[i].keys.append("U")
-            
+
             # Down Side
             down_node = self.findNodeFromPosition([x,y+1])
             if down_node != -1:
                 self.nodes[i].adj.append(self.nodes[down_node])
                 self.nodes[i].keys.append("D")
 
+            # Up Side
+            up_node = self.findNodeFromPosition([x,y-1])
+            if up_node != -1:
+                self.nodes[i].adj.append(self.nodes[up_node])
+                self.nodes[i].keys.append("U")
+            
             # Left Side
             left_node = self.findNodeFromPosition([x-1,y])
             if left_node != -1:

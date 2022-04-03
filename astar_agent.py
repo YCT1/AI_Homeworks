@@ -1,20 +1,16 @@
 import time
 import random
-from copy import deepcopy
-
 import math
-from agent import Agent, Map, Node
-from models import AStart
+from agent import Agent, Map
+
 
 #  use whichever data structure you like, or create a custom one
-import queue
-import heapq
-from collections import deque
+
 
 class AStart(Map):
     def walkableCells(self, element: str) -> bool:
         """
-        It check and return true if cell is desired walkable cells for level2
+        It check and return true if cell is desired walkable cells Overwritten for level2
         """
         return element == "F" or element == "B" or element == "T" or element == "S" or element == "D"  
 
@@ -40,81 +36,94 @@ class AStart(Map):
         dy = target_position[1] - start_position[1]
         return math.sqrt(dx**2 + dy**2)
 
+    
     def aStartAlgorithm(self, start_position: list(), target_position: list(), heuristic):
-        # In this open_lst is a lisy of nodes which have been visited, but who's 
-        # neighbours haven't all been always inspected, It starts off with the start 
-        #node
-        # And closed_lst is a list of nodes which have been visited
-        # and who's neighbors have been always inspected
+       
+        # Let's get node from their position respectively
         start = self.findNodeFromPositionRef(start_position)
         target = self.findNodeFromPositionRef(target_position)
 
-        open_lst = set([start])
-        closed_lst = set([])
+
+        # We are going to use Python's set data structure, this data structure is exacatly what we need
+        # We need and "open set", these will store visited nodes that can be expanded
+        # We need to add start (root) to the our set
+        open_set = set([start])
+        self.expanded_node_count += 1 # For stats
+
+        # This set will store all expanded nodes and discovered nodes (nodes that all children nodes are explored)
+        closed_set = set([])
  
-        # poo has present distances from start to all other nodes
-        # the default value is +infinity
-        poo = {}
-        poo[start] = 0
+        # In this part, We can use Python's dict to store cost from start to that found node
+        cost_dict = {}
+        cost_dict[start] = 0
  
-        # par contains an adjac mapping of all nodes
-        par = {}
-        par[start] = start
+        # Neughboards mapping of all node
+        came_from = {}
+        came_from[start] = start
  
-        while open_lst:
+        while open_set:
             n = None
  
-            # it will find a node with the lowest value of f() -
-            for v in open_lst:
-                if n == None or poo[v] + heuristic(v.position,target_position) < poo[n] + heuristic(n.position, target_position):
+            # Find lowest cost node  (Apply A* formula)
+            for v in open_set:
+                # N is empty fill it
+                if n == None:
                     n = v
- 
+                if cost_dict[v] + heuristic(v.position,target_position) < cost_dict[n] + heuristic(n.position, target_position):
+                     n = v
+
+            # If n is still  none thus there is no route 
             if n == None:
-                print('Path does not exist!')
                 return None
  
-            # if the current node is the stop
-            # then we start again from start
+            # If we reach the target, we need to re-constract the path using came_from dict
             if n == target:
-                reconst_path = []
+                final_path = []
  
-                while par[n] != n:
-                    reconst_path.append(n)
-                    n = par[n]
+                while came_from[n] != n:
+                    final_path.append(n)
+                    n = came_from[n]
  
-                reconst_path.append(start)
+                final_path.append(start)
+                final_path.reverse()
+                print("Path", *final_path)
+                return final_path
  
-                reconst_path.reverse()
- 
-                print("Path", *reconst_path)
-                return reconst_path
- 
-            # for all the neighbors of the current node do
+            # Traverse though adj of n
             for adj_node in n.adj:
-              # if the current node is not presentin both open_lst and closed_lst
-                # add it to open_lst and note n as it's par
-                if adj_node not in open_lst and adj_node not in closed_lst:
-                    open_lst.add(adj_node)
-                    par[adj_node] = n
-                    poo[adj_node] = poo[n] + adj_node.cost
- 
-                # otherwise, check if it's quicker to first visit n, then m
-                # and if it is, update par data and poo data
-                # and if the node was in the closed_lst, move it to open_lst
-                else:
-                    if poo[adj_node] > poo[n] + adj_node.cost:
-                        poo[adj_node] = poo[n] + adj_node.cost
-                        par[adj_node] = n
- 
-                        if adj_node in closed_lst:
-                            closed_lst.remove(adj_node)
-                            open_lst.add(adj_node)
- 
-            # remove n from the open_lst, and add it to closed_lst
-            # because all of his neighbors were inspected
-            open_lst.remove(n)
-            closed_lst.add(n)
+                # If we not visited this node n at all,
+                if (adj_node not in open_set) and (adj_node not in closed_set):
+                    
+                    # Store the path
+                    came_from[adj_node] = n
 
+                    # Store the cost
+                    cost_dict[adj_node] = cost_dict[n] + adj_node.cost
+
+                    # Add to the set of open_set
+                    open_set.add(adj_node)
+                    self.expanded_node_count += 1 # For stats
+ 
+                
+                else:
+                    # However, if it is better deal to go in that route
+                    if cost_dict[n] + adj_node.cost < cost_dict[adj_node]:
+                        # Store path and cost
+                        cost_dict[adj_node] = cost_dict[n] + adj_node.cost
+                        came_from[adj_node] = n
+
+                        # We need to remove if that adj_node in close set because we can explore more
+                        if adj_node in closed_set:
+                            closed_set.remove(adj_node)
+                            open_set.add(adj_node)
+                            self.expanded_node_count += 1 # For stats
+ 
+            # All adj nodes are explored thus it is closed case
+            open_set.remove(n)
+            closed_set.add(n)
+            self.generated_node_count += 1 # For stats
+ 
+        # If that point, we cannot find anything thus there is no any route
         return None
 
 
@@ -139,6 +148,7 @@ class AStarAgent(Agent):
         
         self.map_manager = AStart(initial_level_matrix)
         _,move_sequence = self.map_manager.calculateToAllTarget()
+        self.generated_node_count, self.expanded_node_count = self.map_manager.generated_node_count, self.map_manager.expanded_node_count
 
         """
             YOUR CODE ENDS HERE
