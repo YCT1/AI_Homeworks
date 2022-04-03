@@ -301,8 +301,8 @@ class Agent:
         #  you may precompute distances between pairs of points here
 
 
-
-class Map:
+# Map agent inherited from Agent Class
+class Map(Agent):
     def __init__(self, map_matrix: list()) -> None:
         
         self.nodes = list()
@@ -314,6 +314,7 @@ class Map:
 
         # Baby Position
         self.baby_position = self.nodes[self.findNodeFromType("B")].position
+        super().__init__()
 
 
     def fill(self, matrix : list(), value) -> list():

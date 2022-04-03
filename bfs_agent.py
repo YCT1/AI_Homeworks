@@ -2,7 +2,7 @@ import time
 import random
 from copy import deepcopy
 from agent import Agent, Map
-from models import BFSMap
+
 
 #  use whichever data structure you like, or create a custom one
 import queue
@@ -26,6 +26,7 @@ class BFSMap(Map):
 
         queue = [[self.findNodeFromPositionRef(initial_position)]]
         
+        #self.maximum_node_in_memory_count = 0
         while queue:
             path = queue.pop(0)
             node = path[-1]
@@ -35,7 +36,12 @@ class BFSMap(Map):
                     new_path = list(path)
                     new_path.append(neighbour)
                     queue.append(new_path)
-                    
+
+                    # Stats
+                    self.expanded_node_count += 1
+                    if len(queue) >= self.maximum_node_in_memory_count:
+                        self.maximum_node_in_memory_count = len(queue)
+                    # Stats end
     
                     if neighbour.position == target_position:
                         print("Path", *new_path)
@@ -65,6 +71,10 @@ class BFSAgent(Agent):
         
         self.map_manager = BFSMap(initial_level_matrix)
         paths,move_sequence = self.map_manager.calculateToAllTarget()
+
+
+        self.expanded_node_count = self.map_manager.expanded_node_count
+        self.maximum_node_in_memory_count = self.maximum_node_in_memory_count
         """
             YOUR CODE ENDS HERE
             return move_sequence
