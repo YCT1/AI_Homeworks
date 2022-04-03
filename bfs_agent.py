@@ -38,7 +38,7 @@ class BFSMap(Map):
                     queue.append(new_path)
 
                     # Stats
-                    self.expanded_node_count += 1
+                    self.generated_node_count += 1
                     if len(queue) >= self.maximum_node_in_memory_count:
                         self.maximum_node_in_memory_count = len(queue)
                     # Stats end
@@ -46,6 +46,7 @@ class BFSMap(Map):
                     if neighbour.position == target_position:
                         print("Path", *new_path)
                         return new_path
+                self.expanded_node_count += 1
                 node.is_visited = True
     
         return None
@@ -72,9 +73,10 @@ class BFSAgent(Agent):
         self.map_manager = BFSMap(initial_level_matrix)
         paths,move_sequence = self.map_manager.calculateToAllTarget()
 
-
+        # Get stats
         self.expanded_node_count = self.map_manager.expanded_node_count
-        self.maximum_node_in_memory_count = self.maximum_node_in_memory_count
+        self.maximum_node_in_memory_count = self.map_manager.maximum_node_in_memory_count
+        self.generated_node_count = self.map_manager.generated_node_count
         """
             YOUR CODE ENDS HERE
             return move_sequence

@@ -63,7 +63,9 @@ class AStart(Map):
  
         while open_set:
             n = None
- 
+
+            if len(open_set) + len(closed_set) >= self.maximum_node_in_memory_count:
+                self.maximum_node_in_memory_count = len(open_set) + len(closed_set)
             # Find lowest cost node  (Apply A* formula)
             for v in open_set:
                 # N is empty fill it
@@ -148,7 +150,11 @@ class AStarAgent(Agent):
         
         self.map_manager = AStart(initial_level_matrix)
         _,move_sequence = self.map_manager.calculateToAllTarget()
+
+        # Get stats
         self.generated_node_count, self.expanded_node_count = self.map_manager.generated_node_count, self.map_manager.expanded_node_count
+        self.expanded_node_count = self.map_manager.expanded_node_count
+        self.maximum_node_in_memory_count = self.map_manager.maximum_node_in_memory_count
 
         """
             YOUR CODE ENDS HERE

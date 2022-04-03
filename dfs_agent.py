@@ -37,9 +37,15 @@ class DFSMap(Map):
                     return path
                 node.is_visited = True
                 for adj_node in node.adj:
+                    # Stats
+                    self.generated_node_count += 1
+                    if len(stack) >= self.maximum_node_in_memory_count:
+                        self.maximum_node_in_memory_count = len(stack)
+                    # Stats end
+
                     stack.append(adj_node)
                     stack_path.append(path+[adj_node])
-                    #self.expanded_node_count += 1
+                self.expanded_node_count += 1
             pass
         
         
@@ -65,7 +71,11 @@ class DFSAgent(Agent):
         
         self.map_manager = DFSMap(initial_level_matrix)
         paths, move_sequence = self.map_manager.calculateToAllTarget()
-        #self.expanded_node_count = self.map_manager.expanded_node_count
+
+        # Get stats
+        self.expanded_node_count = self.map_manager.expanded_node_count
+        self.maximum_node_in_memory_count = self.map_manager.maximum_node_in_memory_count
+        self.generated_node_count = self.map_manager.generated_node_count
         """
             YOUR CODE ENDS HERE
             return move_sequence
